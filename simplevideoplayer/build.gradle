@@ -1,15 +1,20 @@
-apply plugin: 'com.android.application'
+import java.text.SimpleDateFormat
 
+apply plugin: 'com.android.application'
+static String getDate() {
+    Date date = new Date()
+    return new SimpleDateFormat("yyyyMMdd", Locale.CHINA).format(date)
+}
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.simplerecycleview.wangsheng"
         minSdkVersion 19
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 28
+        versionCode project.VERSIONCODE  as int
+        versionName project.VERSIONNAME
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -19,6 +24,36 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+    afterEvaluate {
+        applicationVariants.all { variant ->
+            variant.outputs.all {
+                outputFileName = "jekins测试${defaultConfig.versionName}_${getDate()}.apk"
+            }
+//                    variant.assemble.doLast {
+//                        def apkPath = variant.outputs.getAt(0).outputFile as File
+//                        println System.properties['os.name']
+//                        if (isWindows()) {
+//                            println "current system is windows"
+//                            exec {
+//                                ignoreExitValue true
+//                                commandLine "cmd", "/c", "..\\jiagu\\jiagu.bat ${apkPath} ${apkPath.getParent()}"
+//                            }
+//                        } else {
+//                            println "current system is linux"
+//                            exec {
+//                                ignoreExitValue true
+//                                commandLine "sh", "../jiagu/jiagu.sh", apkPath, apkPath.getParent()
+//                            }
+//                        }
+//                    }
+        }
     }
 }
 
@@ -27,7 +62,7 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    api 'com.android.support:appcompat-v7:27.0.0'
+    api 'com.android.support:appcompat-v7:28.0.0'
     api 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
 }
